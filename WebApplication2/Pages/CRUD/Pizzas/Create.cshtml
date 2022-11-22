@@ -1,0 +1,74 @@
+﻿@page
+@model WebApplication2.Pages.CRUD.Pizzas.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Pizza</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Pizza.ImagePath" class="control-label"></label>
+                <input asp-for="Pizza.ImagePath" class="form-control" />
+                <span asp-validation-for="Pizza.ImagePath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pizza.PizzaName" class="control-label"></label>
+                <input asp-for="Pizza.PizzaName" class="form-control" />
+                <span asp-validation-for="Pizza.PizzaName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pizza.PizzaPrice" class="control-label"></label>
+                <input asp-for="Pizza.PizzaPrice" class="form-control" />
+                <span asp-validation-for="Pizza.PizzaPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Pizza.Tomato" /> @Html.DisplayNameFor(model => model.Pizza.Tomato)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Pizza.Cheese" /> @Html.DisplayNameFor(model => model.Pizza.Cheese)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Pizza.Mushroom" /> @Html.DisplayNameFor(model => model.Pizza.Mushroom)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Pizza.Chicken" /> @Html.DisplayNameFor(model => model.Pizza.Chicken)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Pizza.Bbq" /> @Html.DisplayNameFor(model => model.Pizza.Bbq)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pizza.Description" class="control-label"></label>
+                <input asp-for="Pizza.Description" class="form-control" />
+                <span asp-validation-for="Pizza.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,60 @@
+﻿@page
+@model WebApplication2.Pages.CRUD.Orders.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Order[0].CstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order[0].CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order[0].PizzaName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order[0].PizzaPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order[0].OrderStatus)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Order) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PizzaName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PizzaPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderStatus)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
