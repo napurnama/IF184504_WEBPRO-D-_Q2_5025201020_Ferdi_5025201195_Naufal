@@ -1,0 +1,76 @@
+﻿@page
+@model WebApplication1.Pages.Pizza.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Pizza</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.ImagePath)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.ImagePath)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.PizzaName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.PizzaName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.PizzaPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.PizzaPrice)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.Tomato)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.Tomato)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.Cheese)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.Cheese)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.Mushroom)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.Mushroom)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.Chicken)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.Chicken)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.Bbq)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.Bbq)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pizza.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pizza.Description)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Pizza.PizzaId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>
