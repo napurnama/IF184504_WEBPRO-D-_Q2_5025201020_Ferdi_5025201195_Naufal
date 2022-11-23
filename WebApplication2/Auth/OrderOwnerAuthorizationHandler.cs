@@ -20,10 +20,12 @@ namespace WebApplication2.Auth
             )
         {
             if (context.User == null || order == null) return Task.CompletedTask;
+
             if(requirement.Name != OrderOperationConstants.CreateOperationName 
                 && requirement.Name != OrderOperationConstants.ReadOperationName
                 && requirement.Name != OrderOperationConstants.UpdateOperationName
                 && requirement.Name != OrderOperationConstants.DeleteOperationName) return Task.CompletedTask;
+
             if (_userManager.GetUserId(context.User) == order.CstId)
             {
                 context.Succeed(requirement);

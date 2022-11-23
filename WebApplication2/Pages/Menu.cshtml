@@ -1,0 +1,24 @@
+﻿@page
+@model WebApplication2.Pages.CRUD.Pizzas.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Menu</h1>
+
+<div class="row">
+    @foreach (var item in Model.Pizza) {
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="card">
+                <img style="height: 25vh; object-fit: cover;" src=@item.ImagePath class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@item.PizzaName</h5>
+                    <h5 class="fs-4 text-danger">$@item.PizzaPrice</h5>
+                    <p class="card-text fw-light">@item.Description</p>
+                    <a href="#" class="btn btn-danger">Order</a>
+                </div>
+            </div>
+        </div>
+    }
+</>

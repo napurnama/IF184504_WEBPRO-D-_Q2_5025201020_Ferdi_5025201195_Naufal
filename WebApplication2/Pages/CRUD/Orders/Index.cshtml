@@ -25,9 +25,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Order[0].PizzaPrice)
             </th>
-            @*<th>
+            <th>
                 @Html.DisplayNameFor(model => model.Order[0].OrderStatus)
-            </th>*@
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -46,9 +46,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PizzaPrice)
             </td>
-            @*<td>
+            <td>
                 @Html.DisplayFor(modelItem => item.OrderStatus)
-            </td>*@
+            </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |

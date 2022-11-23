@@ -34,17 +34,44 @@ namespace WebApplication2.Pages.CRUD.Orders
             {
                 return NotFound();
             }
-            else 
-            {
-                Order = order;
-            }
+
+            Order = order;
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
                 User, Order, OrderOperations.Read);
+            var isAdmin = User.IsInRole(ApplicationUserRoles.AdminRole);
 
-            if (isAuthorized.Succeeded == false) return Forbid();
+            if (isAuthorized.Succeeded == false && isAdmin == false) return Forbid();
 
             return Page();
+        }
+
+
+        public async Task<IActionResult> OnPostAsync(int id, OrderStatusConstants status)
+        {
+            var order = await Context.Order.FindAsync(id);
+            if (order == null) return NotFound();
+
+            Order = order;
+
+            var operation = OrderOperations.Cook;
+            if (status == OrderStatusConstants.Cooking) operation = OrderOperations.Cook;
+            if (status == OrderStatusConstants.Ready) operation = OrderOperations.Cooked;
+            if (status == OrderStatusConstants.Delivered) operation = OrderOperations.Deliver;
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, Order, operation);
+
+            var isAdmin = User.IsInRole(ApplicationUserRoles.AdminRole);
+
+            if (isAuthorized.Succeeded == false && isAdmin == false) return Forbid();
+
+            Order.OrderStatus = status;
+            Context.Order.Update(Order);
+
+            await Context.SaveChangesAsync();
+
+            return RedirectToPage("./Index");
         }
     }
 }

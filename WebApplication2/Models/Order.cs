@@ -4,10 +4,10 @@
 	{
 		public int Id { get; set; }
 		public string CstName { get; set; }
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		public DateTime? CreatedDate { get; set; } = DateTime.Now;
 		public string PizzaName { get; set; }
 		public decimal PizzaPrice { get; set; }
-		//public string OrderStatus { get; set; } = OrderStatusConstants.Queued;
+		public OrderStatusConstants? OrderStatus { get; set; } = OrderStatusConstants.Queued;
 
 		public string CstId { get; set; }
 	}

@@ -14,11 +14,6 @@ namespace WebApplication2.Auth
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Order order)
         {
             if (context.User == null || order == null) return Task.CompletedTask;
-
-            if (requirement.Name != OrderOperationConstants.CookOperationName
-                && requirement.Name != OrderOperationConstants.CookedOperationName
-                && requirement.Name != OrderOperationConstants.DeliverOperationName
-                ) return Task.CompletedTask;
             
             if (context.User.IsInRole(ApplicationUserRoles.AdminRole))
             {
@@ -26,8 +21,6 @@ namespace WebApplication2.Auth
             }
 
             return Task.CompletedTask;
-
-            throw new NotImplementedException();
         }
     }
 }

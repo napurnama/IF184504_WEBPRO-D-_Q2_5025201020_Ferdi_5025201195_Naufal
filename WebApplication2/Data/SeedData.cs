@@ -10,6 +10,8 @@ namespace WebApplication2.Data
         {
             using (var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
+
+                //Administrator
                 var adminUser = await EnsureUser(serviceProvider, username, password);
                 await EnsureRole(serviceProvider, adminUser, ApplicationUserRoles.AdminRole);
             }
