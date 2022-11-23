@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WebApplication2.Auth;
 using WebApplication2.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +25,18 @@ builder.Services.AddAuthorization(options =>
 
 });
 
+builder.Services.AddScoped<IAuthorizationHandler, OrderOwnerAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthorizationHandler>();
+
 var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedData.Initialize(services, "manager@demo.com");
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -2,57 +2,72 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pizzeria.Models;
+using WebApplication2.Auth;
 using WebApplication2.Data;
 
 namespace WebApplication2.Pages.CRUD.Orders
 {
-    public class EditModel : PageModel
+    public class EditModel : DIBasePageModel
     {
-        private readonly WebApplication2.Data.ApplicationDbContext _context;
-
-        public EditModel(WebApplication2.Data.ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager)
+            : base(context, authorizationService, userManager)
         {
-            _context = context;
         }
 
         [BindProperty]
-        public Order Order { get; set; } = default!;
+        public Order Order { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Order == null)
+            if (id == null || Context.Order == null)
             {
                 return NotFound();
             }
 
-            var order =  await _context.Order.FirstOrDefaultAsync(m => m.Id == id);
+            var order = await Context.Order.FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
                 return NotFound();
             }
-            Order = order;
+            else
+            {
+                Order = order;
+            }
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, Order, OrderOperations.Update);
+
+            if (isAuthorized.Succeeded == false) return Forbid();
+
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            var order = await Context.Order.AsNoTracking().SingleOrDefaultAsync(m => m.Id == id);
+            if (order == null) return NotFound();
 
-            _context.Attach(Order).State = EntityState.Modified;
+            Order.CstId = order.CstId;
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, Order, OrderOperations.Update);
+
+            if (isAuthorized.Succeeded == false) return Forbid();
+
+            Context.Attach(Order).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,7 +86,7 @@ namespace WebApplication2.Pages.CRUD.Orders
 
         private bool OrderExists(int id)
         {
-          return _context.Order.Any(e => e.Id == id);
+          return Context.Order.Any(e => e.Id == id);
         }
     }
 }

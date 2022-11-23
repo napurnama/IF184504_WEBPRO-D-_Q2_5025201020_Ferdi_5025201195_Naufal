@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pizzeria.Models;
+using WebApplication2.Auth;
 using WebApplication2.Data;
 
 namespace WebApplication2.Pages.CRUD.Orders
 {
-    public class CreateModel : PageModel
+    public class CreateModel : DIBasePageModel
     {
-        private readonly WebApplication2.Data.ApplicationDbContext _context;
-
-        public CreateModel(WebApplication2.Data.ApplicationDbContext context)
+        public CreateModel(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager) 
+            : base(context, authorizationService, userManager)
         {
-            _context = context;
         }
 
         public IActionResult OnGet()
@@ -31,13 +32,16 @@ namespace WebApplication2.Pages.CRUD.Orders
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            Order.CstId = UserManager.GetUserId(User);
 
-            _context.Order.Add(Order);
-            await _context.SaveChangesAsync();
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, Order, OrderOperations.Create
+            );
+
+            if(isAuthorized.Succeeded == false) return Forbid();
+
+            Context.Order.Add(Order);
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

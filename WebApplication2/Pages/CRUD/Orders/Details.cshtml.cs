@@ -2,33 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Pizzeria.Models;
+using WebApplication2.Auth;
 using WebApplication2.Data;
 
 namespace WebApplication2.Pages.CRUD.Orders
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel : DIBasePageModel
     {
-        private readonly WebApplication2.Data.ApplicationDbContext _context;
-
-        public DetailsModel(WebApplication2.Data.ApplicationDbContext context)
+        public DetailsModel(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager)
+            : base(context, authorizationService, userManager)
         {
-            _context = context;
         }
 
-      public Order Order { get; set; }
+        public Order Order { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Order == null)
+            if (id == null || Context.Order == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order.FirstOrDefaultAsync(m => m.Id == id);
+            var order = await Context.Order.FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
                 return NotFound();
@@ -37,6 +38,12 @@ namespace WebApplication2.Pages.CRUD.Orders
             {
                 Order = order;
             }
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, Order, OrderOperations.Read);
+
+            if (isAuthorized.Succeeded == false) return Forbid();
+
             return Page();
         }
     }

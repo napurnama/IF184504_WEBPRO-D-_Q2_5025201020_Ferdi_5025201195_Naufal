@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Pizzeria.Models;
+using WebApplication2.Auth;
 using WebApplication2.Data;
 
 namespace WebApplication2.Pages.CRUD.Orders
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel : DIBasePageModel
     {
-        private readonly WebApplication2.Data.ApplicationDbContext _context;
-
-        public DeleteModel(WebApplication2.Data.ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager)
+            : base(context, authorizationService, userManager)
         {
-            _context = context;
         }
 
         [BindProperty]
@@ -24,12 +25,12 @@ namespace WebApplication2.Pages.CRUD.Orders
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Order == null)
+            if (id == null || Context.Order == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order.FirstOrDefaultAsync(m => m.Id == id);
+            var order = await Context.Order.FirstOrDefaultAsync(m => m.Id == id);
 
             if (order == null)
             {
@@ -39,22 +40,33 @@ namespace WebApplication2.Pages.CRUD.Orders
             {
                 Order = order;
             }
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, Order, OrderOperations.Delete);
+
+            if (isAuthorized.Succeeded == false) return Forbid();
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Order == null)
+            if (id == null || Context.Order == null)
             {
                 return NotFound();
             }
-            var order = await _context.Order.FindAsync(id);
+            var order = await Context.Order.FindAsync(id);
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                User, order, OrderOperations.Delete);
+
+            if (isAuthorized.Succeeded == false) return Forbid();
 
             if (order != null)
             {
                 Order = order;
-                _context.Order.Remove(Order);
-                await _context.SaveChangesAsync();
+                Context.Order.Remove(Order);
+                await Context.SaveChangesAsync();
             }
 
             return RedirectToPage("./Index");
